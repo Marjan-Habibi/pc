@@ -1,68 +1,80 @@
 /* ===========================
-   Palette + theme variables
+   Base / variables
    =========================== */
    :root{
-    /* palette (brand & neutrals) */
-    --accent: #00b9e5;        /* brand button color (you asked) */
+    /* palette */
+    --accent: #00b9e5;
+    --accent-2: #4cc0ff;
     --muted: #9aa4b2;
     --panel: rgba(255,255,255,0.03);
     --card-bg: rgba(255,255,255,0.02);
     --input-border: rgba(255,255,255,0.06);
     --danger: #e55353;
   
-    /* typography / base */
+    /* typography */
     --text-dark: #0b1220;
     --text-light: #e6eefc;
   
-    /* radii / spacing */
+    /* force-readability for Learn */
+    --force-text-light: rgba(194,206,225,0.78);
+    --force-text-dark: #0b1220;
+    --force-muted-dark: rgba(230,238,252,0.78);
+  
+    /* spacing / radii */
     --radius: 10px;
+    --gutter: 12px;
   }
   
-  /* Default = DARK THEME (keeps your original look) */
-  body{
-    background: linear-gradient(180deg,#0b1220 0%, #071021 100%);
-    color: var(--text-light);
-    font-family: Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* Box sizing & sensible defaults */
+  *,
+  *::before,
+  *::after { box-sizing: border-box; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+  html { font-family: Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size:16px; }
+  body { margin:0; color:var(--text-light); background: linear-gradient(180deg,#0b1220 0%, #071021 100%); -webkit-tap-highlight-color: transparent; }
+  
+  /* ---------- Container ---------- */
+  .container{
+    max-width:1200px;
+    margin:0 auto;
+    padding:16px;
+    width:100%;
   }
   
-  /* ===========================
-     Author styles (clean + adaptive)
-     =========================== */
-  .container{ max-width:1200px; }
-  
-  /* topbar / panels */
+  /* ---------- Topbar / panels ---------- */
   .topbar{
     display:flex;
     align-items:center;
     justify-content:space-between;
+    gap:var(--gutter);
     margin-bottom:18px;
-    gap:12px;
   }
   .panel{
     background: var(--panel);
-    border-radius: 10px;
+    border-radius: var(--radius);
     padding: 16px;
     border: 1px solid rgba(255,255,255,0.02);
   }
   
-  /* preview / small card */
+  /* small card / preview */
   .card-block{
     background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
     padding:12px;
     border-radius:8px;
   }
   
-  /* form controls */
+  /* ---------- Form controls ---------- */
   .form-control, .form-select, textarea{
     background: transparent;
     border: 1px solid var(--input-border);
     color: inherit;
     border-radius:6px;
     padding:.5rem;
+    width:100%;
+    min-height:40px;
   }
   .form-control:focus, .form-select:focus, textarea:focus{
     outline:none;
-    box-shadow:0 0 0 3px rgba(76,192,255,0.06); /* subtle focus */
+    box-shadow:0 0 0 3px rgba(76,192,255,0.06);
     border-color: rgba(76,192,255,0.22);
   }
   
@@ -70,28 +82,39 @@
   .small-muted{ color: var(--muted); }
   .section-title{ font-weight:600; color: #dff6f1; margin-bottom:8px; }
   
-  /* buttons */
+  /* ---------- Buttons ---------- */
   .btn-accent{
-    background: linear-gradient(90deg, var(--accent), #4cc0ff);
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    min-height:44px;               /* touch-friendly */
+    padding: .5rem 1rem;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
     border:none;
-    color: #022;
+    color:#022;
+    border-radius:10px;
+    cursor:pointer;
   }
   .btn-ghost{
     background: transparent;
     border:1px solid rgba(255,255,255,0.04);
     color: var(--muted);
+    min-height:44px;
+    padding:.5rem .75rem;
+    border-radius:8px;
   }
   
-  /* meta grid */
+  /* ---------- Meta grid (responsive) ---------- */
   .meta-grid{
     display:grid;
-    grid-template-columns:1fr 220px;
-    gap:12px;
+    grid-template-columns: 1fr 320px;
+    gap:var(--gutter);
   }
-  .notes-area{ height:160px; }
+  .notes-area{ height:160px; resize:vertical; }
   .compact-input{ height:40px; padding:.35rem .5rem; }
   
-  /* json output */
+  /* ---------- JSON output ---------- */
   .json-out{
     background:#021018;
     padding:10px;
@@ -99,10 +122,12 @@
     border:1px solid rgba(255,255,255,0.03);
     max-height:240px;
     overflow:auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+    font-size:0.92rem;
   }
   
-  /* flashcard rows, quiz blocks */
-  .flashcard-row{ display:flex; gap:8px; align-items:flex-start; margin-bottom:8px; }
+  /* ---------- Flashcard / quiz ---------- */
+  .flashcard-row{ display:flex; gap:8px; align-items:flex-start; margin-bottom:8px; flex-wrap:wrap; }
   .quiz-block{
     margin-bottom:12px;
     border-radius:10px;
@@ -133,22 +158,13 @@
     border:1px solid var(--input-border);
     background:transparent;
   }
-  .quiz-controls{ display:flex; gap:10px; align-items:center; margin-top:12px; }
+  .quiz-controls{ display:flex; gap:10px; align-items:center; margin-top:12px; flex-wrap:wrap; }
   .correct-input{ width:70px; padding:.45rem; border-radius:8px; text-align:center; border:1px solid var(--input-border); background:transparent; }
   .explain-input{ flex:1; padding:.45rem; border-radius:8px; border:1px solid rgba(255,255,255,0.03); color:rgba(255,255,255,0.85); }
-  .remove-btn{ background: linear-gradient(135deg,#a83a3a,#ff6b6b); color:#fff; border:none; padding:.5rem .7rem; border-radius:8px; }
+  .remove-btn{ background: linear-gradient(135deg,#a83a3a,#ff6b6b); color:#fff; border:none; padding:.5rem .7rem; border-radius:8px; cursor:pointer; }
   
-  /* responsive adjustments for author area */
-  @media (max-width:991px){
-    .meta-grid{ grid-template-columns:1fr; }
-    .notes-area{ height:120px; }
-    .choices-grid{ grid-template-columns:1fr; }
-  }
-  
-  /* ===========================
-     Learn / Flashcard styles
-     =========================== */
-  .custom-navbar{ background: rgba(10,10,10,0.85); } /* navbar background */
+  /* ---------- Learn / flashcard area ---------- */
+  .custom-navbar{ background: rgba(10,10,10,0.85); width:100%; position:relative; z-index:10; }
   .logo-circle{
     display:inline-flex;
     align-items:center;
@@ -171,8 +187,21 @@
   
   /* flashcard container and 3D flip */
   .flashcard-card{ background:transparent; border:0; }
-  #flashcard{ width:100%; max-width:680px; height:220px; margin:0 auto; perspective:1200px; cursor:pointer; }
-  #flashcard-inner{ width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform .6s; }
+  #flashcard{
+    width:100%;
+    max-width:680px;
+    height:220px;
+    margin:0 auto;
+    perspective:1200px;
+    cursor:pointer;
+  }
+  #flashcard-inner{
+    width:100%;
+    height:100%;
+    position:relative;
+    transform-style:preserve-3d;
+    transition:transform .6s;
+  }
   #flashcard.flipped #flashcard-inner{ transform:rotateY(180deg); }
   .flash-face{
     position:absolute;
@@ -185,6 +214,7 @@
     backface-visibility:hidden;
     box-shadow:0 8px 24px rgba(15,23,42,0.08);
     color: inherit;
+    overflow:hidden;
   }
   /* FRONT / BACK adapt to theme via variables */
   .flash-face.front{
@@ -201,16 +231,8 @@
   .pane{ display:none; }
   .pane.active{ display:block; }
   
-  /* small responsive tweaks */
-  @media (max-width:767px){
-    #flashcard{ height:180px; }
-    .card.p-4{ padding:1rem; }
-  }
-  
   /* utilities */
   .muted-small{ font-size:.85rem; color:var(--muted); }
-  
-  /* quiz options */
   .quiz-option{
     cursor:pointer;
     border-radius:8px;
@@ -228,16 +250,11 @@
      Apply when body has class .light
      =========================== */
   body.light{
-    /* invert background & text */
     background: linear-gradient(180deg,#f5f5f5 0%, #dcdfe3 100%);
     color: var(--text-dark);
   }
-  
-  /* make panels lighter in light mode */
   body.light .panel{ background: rgba(255,255,255,0.95); border-color: rgba(0,0,0,0.06); }
   body.light .card-block{ background: linear-gradient(180deg,#fff,#f6f8fa); color: var(--text-dark); }
-  
-  /* form controls contrast in light */
   body.light .form-control, body.light .form-select, body.light textarea{
     border:1px solid rgba(0,0,0,0.08);
     color: var(--text-dark);
@@ -247,20 +264,18 @@
     box-shadow:0 0 0 3px rgba(0,185,229,0.06);
     border-color: rgba(0,185,229,0.22);
   }
-  
-  /* buttons in light */
   body.light .btn-accent{ color:#022; }
   body.light .btn-ghost{ border-color: rgba(0,0,0,0.06); color: #555; }
   
-  /* flashface colors in light mode (so text remains readable) */
-  body.light { 
+  /* flashface colors in light mode */
+  body.light {
     --front-bg: #ffffff;
     --front-color: #0b1220;
     --back-bg: #f0f4f8;
     --back-color: #0b1220;
   }
   
-  /* in dark (default) ensure front/back contrast */
+  /* dark defaults */
   body:not(.light){
     --front-bg: #ffffff;
     --front-color: #000;
@@ -270,355 +285,79 @@
   
   /* small accessibility: ensure .json-out text color */
   .json-out, .quiz-block, .flash-face.back { color: inherit; }
-  
-  /* ensure library area elements (like .panel-header .title) remain visible */
   .panel-header .title, .title { color: inherit; }
-/* ===========================
-   Palette + theme variables
-   =========================== */
-:root{
-  /* palette (brand & neutrals) */
-  --accent: #00b9e5;        /* brand button color (you asked) */
-  --muted: #9aa4b2;
-  --panel: rgba(255,255,255,0.03);
-  --card-bg: rgba(255,255,255,0.02);
-  --input-border: rgba(255,255,255,0.06);
-  --danger: #e55353;
-
-  /* typography / base */
-  --text-dark: #0b1220;
-  --text-light: #e6eefc;
-
-  /* radii / spacing */
-  --radius: 10px;
-}
-
-/* Default = DARK THEME (keeps your original look) */
-body{
-  background: linear-gradient(180deg,#0b1220 0%, #071021 100%);
-  color: var(--text-light);
-  font-family: Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-}
-
-/* ===========================
-   Author styles (clean + adaptive)
-   =========================== */
-.container{ max-width:1200px; }
-
-/* topbar / panels */
-.topbar{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:18px;
-  gap:12px;
-}
-.panel{
-  background: var(--panel);
-  border-radius: 10px;
-  padding: 16px;
-  border: 1px solid rgba(255,255,255,0.02);
-}
-
-/* preview / small card */
-.card-block{
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  padding:12px;
-  border-radius:8px;
-}
-
-/* form controls */
-.form-control, .form-select, textarea{
-  background: transparent;
-  border: 1px solid var(--input-border);
-  color: inherit;
-  border-radius:6px;
-  padding:.5rem;
-}
-.form-control:focus, .form-select:focus, textarea:focus{
-  outline:none;
-  box-shadow:0 0 0 3px rgba(76,192,255,0.06); /* subtle focus */
-  border-color: rgba(76,192,255,0.22);
-}
-
-/* misc text */
-.small-muted{ color: var(--muted); }
-.section-title{ font-weight:600; color: #dff6f1; margin-bottom:8px; }
-
-/* buttons */
-.btn-accent{
-  background: linear-gradient(90deg, var(--accent), #4cc0ff);
-  border:none;
-  color: #022;
-}
-.btn-ghost{
-  background: transparent;
-  border:1px solid rgba(255,255,255,0.04);
-  color: var(--muted);
-}
-
-/* meta grid */
-.meta-grid{
-  display:grid;
-  grid-template-columns:1fr 220px;
-  gap:12px;
-}
-.notes-area{ height:160px; }
-.compact-input{ height:40px; padding:.35rem .5rem; }
-
-/* json output */
-.json-out{
-  background:#021018;
-  padding:10px;
-  border-radius:8px;
-  border:1px solid rgba(255,255,255,0.03);
-  max-height:240px;
-  overflow:auto;
-}
-
-/* flashcard rows, quiz blocks */
-.flashcard-row{ display:flex; gap:8px; align-items:flex-start; margin-bottom:8px; }
-.quiz-block{
-  margin-bottom:12px;
-  border-radius:10px;
-  padding:12px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
-  border:1px solid rgba(255,255,255,0.02);
-}
-
-/* quiz inputs */
-.quiz-question{
-  width:100%;
-  border-radius:12px;
-  border:1px solid var(--input-border);
-  padding:12px 14px;
-  font-size:15px;
-  background:transparent;
-}
-.choices-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:10px;
-}
-.choice-input{
-  border-radius:8px;
-  padding:.6rem;
-  height:42px;
-  border:1px solid var(--input-border);
-  background:transparent;
-}
-.quiz-controls{ display:flex; gap:10px; align-items:center; margin-top:12px; }
-.correct-input{ width:70px; padding:.45rem; border-radius:8px; text-align:center; border:1px solid var(--input-border); background:transparent; }
-.explain-input{ flex:1; padding:.45rem; border-radius:8px; border:1px solid rgba(255,255,255,0.03); color:rgba(255,255,255,0.85); }
-.remove-btn{ background: linear-gradient(135deg,#a83a3a,#ff6b6b); color:#fff; border:none; padding:.5rem .7rem; border-radius:8px; }
-
-/* responsive adjustments for author area */
-@media (max-width:991px){
-  .meta-grid{ grid-template-columns:1fr; }
-  .notes-area{ height:120px; }
-  .choices-grid{ grid-template-columns:1fr; }
-}
-
-/* ===========================
-   Learn / Flashcard styles
-   =========================== */
-.custom-navbar{ background: rgba(10,10,10,0.85); } /* navbar background */
-.logo-circle{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:34px;
-  height:34px;
-  border-radius:8px;
-  background:#111;
-  color:#fff;
-  font-weight:700;
-}
-
-/* dark card */
-.dark-card{
-  background: var(--card-bg);
-  border-radius:12px;
-  border:0;
-  box-shadow:0 6px 20px rgba(17,24,39,0.06);
-}
-
-/* flashcard container and 3D flip */
-.flashcard-card{ background:transparent; border:0; }
-#flashcard{ width:100%; max-width:680px; height:220px; margin:0 auto; perspective:1200px; cursor:pointer; }
-#flashcard-inner{ width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform .6s; }
-#flashcard.flipped #flashcard-inner{ transform:rotateY(180deg); }
-.flash-face{
-  position:absolute;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:10px;
-  padding:20px;
-  backface-visibility:hidden;
-  box-shadow:0 8px 24px rgba(15,23,42,0.08);
-  color: inherit;
-}
-/* FRONT / BACK adapt to theme via variables */
-.flash-face.front{
-  background: var(--front-bg, #ffffff);
-  color: var(--front-color, #000);
-}
-.flash-face.back{
-  background: var(--back-bg, #111);
-  color: var(--back-color, #fff);
-  transform:rotateY(180deg);
-}
-
-/* panes controlled by JS */
-.pane{ display:none; }
-.pane.active{ display:block; }
-
-/* small responsive tweaks */
-@media (max-width:767px){
-  #flashcard{ height:180px; }
-  .card.p-4{ padding:1rem; }
-}
-
-/* utilities */
-.muted-small{ font-size:.85rem; color:var(--muted); }
-
-/* quiz options */
-.quiz-option{
-  cursor:pointer;
-  border-radius:8px;
-  padding:.6rem;
-  margin:.35rem 0;
-  border:1px solid rgba(0,0,0,0.06);
-  background: transparent;
-}
-.quiz-option:hover{ background: rgba(255,255,255,0.02); }
-.quiz-option.correct{ border-color: #2ecc71; }
-.quiz-option.wrong{ border-color: #d63333; }
-
-/* ===========================
-   LIGHT THEME OVERRIDES
-   Apply when body has class .light
-   =========================== */
-body.light{
-  /* invert background & text */
-  background: linear-gradient(180deg,#f5f5f5 0%, #dcdfe3 100%);
-  color: var(--text-dark);
-}
-
-/* make panels lighter in light mode */
-body.light .panel{ background: rgba(255,255,255,0.95); border-color: rgba(0,0,0,0.06); }
-body.light .card-block{ background: linear-gradient(180deg,#fff,#f6f8fa); color: var(--text-dark); }
-
-/* form controls contrast in light */
-body.light .form-control, body.light .form-select, body.light textarea{
-  border:1px solid rgba(0,0,0,0.08);
-  color: var(--text-dark);
-  background: #fff;
-}
-body.light .form-control:focus, body.light .form-select:focus, body.light textarea:focus{
-  box-shadow:0 0 0 3px rgba(0,185,229,0.06);
-  border-color: rgba(0,185,229,0.22);
-}
-
-/* buttons in light */
-body.light .btn-accent{ color:#022; }
-body.light .btn-ghost{ border-color: rgba(0,0,0,0.06); color: #555; }
-
-/* flashface colors in light mode (so text remains readable) */
-body.light { 
-  --front-bg: #ffffff;
-  --front-color: #0b1220;
-  --back-bg: #f0f4f8;
-  --back-color: #0b1220;
-}
-
-/* in dark (default) ensure front/back contrast */
-body:not(.light){
-  --front-bg: #ffffff;
-  --front-color: #000;
-  --back-bg: #111;
-  --back-color: #fff;
-}
-
-/* small accessibility: ensure .json-out text color */
-.json-out, .quiz-block, .flash-face.back { color: inherit; }
-
-/* ensure library area elements (like .panel-header .title) remain visible */
-.panel-header .title, .title { color: inherit; }
   
-/* ---------- Force readable header / muted text for Learn page ---------- */
-/* رنگ‌های پایه (اگر خواستید تغییر بدید) */
-:root{
-  --force-text-light:   rgba(194, 206, 225, 0.78);   /* متن در تم تاریک */
-  --force-text-dark:  #0b1220;    /* متن در تم روشن */
-  --force-muted-dark: rgba(230,238,252,0.78); /* muted در تم تاریک (خواناتر) */
-  --force-muted-light: #0b1220;  /* muted در تم روشن */
-}
-
-/* 1) تضمین خوانایی برای هدر داخل کارت Learn (پیشفرض تیره) */
-#learnPage .header-text,
-#learnPage .header-text * {
-  color: var(--force-text-light) !important;
-}
-
-/* 2) پوشش همه متن‌های muted/small-muted/text-muted در صفحه Learn */
-#learnPage .small-muted,
-#learnPage .muted-small,
-#learnPage .text-muted,
-#learnPage .small.text-muted,
-#learnPage .muted-small * {
-  color: var(--force-muted-dark) !important;
-  opacity: 1 !important;
-}
-
-/* 3) پروگرس / لیبل و متن‌های کمکی (kbd) */
-#learnPage #progressLabel,
-#learnPage .small.text-muted,
-#learnPage .progress,
-#learnPage .progress .progress-bar {
-  color: var(--force-muted-dark) !important;
-}
-#learnPage kbd {
-  background: rgba(255,255,255,0.06) !important;
-  color: var(--force-text-light) !important;
-  border-radius:4px;
-  padding:2px 6px;
-  font-weight:600;
-}
-
-/* 4) اگر هنوز المان‌ها استایل خطی `color: black` داشته‌اند — بازنویسی کلی داخل کارت */
-#learnPage .card-body, 
-#learnPage .card-body h5,
-#learnPage .card-body p,
-#learnPage .card-body small,
-#learnPage .card-body ul,
-#learnPage .card-body li {
-  color: var(--force-text-light) !important;
-}
-
-/* 5) حالت Light Theme: بازگردانی رنگ‌های مناسب */
-body.light #learnPage .header-text,
-body.light #learnPage .card-body,
-body.light #learnPage .small-muted,
-body.light #learnPage .text-muted {
-  color: var(--force-text-dark) !important;
-}
-body.light kbd { color: var(--force-text-dark) !important; background: rgba(11,18,32,0.05) !important; }
-
-/* 6) کوتاه: اگر هنوز جایی استایل خطی "style='color: black'" هست، این سطر آن را اورراید می‌کند */
-#learnPage [style*="color: black"], 
-#learnPage [style*="color:black"] {
-  color: var(--force-text-light) !important;
-}
-
-/* 7) افزایش کنتراست برای متون خیلی کم‌رنگ */
-#learnPage .muted-small, 
-#learnPage .small-muted {
-  filter: none !important;
-  text-shadow: none !important;
-}
-
-
+  /* ---------- FORCE readable header / muted text for Learn page ---------- */
+  #learnPage .header-text,
+  #learnPage .header-text * { color: var(--force-text-light) !important; }
+  #learnPage .small-muted,
+  #learnPage .muted-small,
+  #learnPage .text-muted,
+  #learnPage .small.text-muted { color: var(--force-muted-dark) !important; opacity:1 !important; }
+  #learnPage #progressLabel,
+  #learnPage .progress,
+  #learnPage .progress .progress-bar { color: var(--force-muted-dark) !important; }
+  #learnPage kbd { background: rgba(255,255,255,0.06) !important; color: var(--force-text-light) !important; border-radius:4px; padding:2px 6px; font-weight:600; }
+  #learnPage .card-body, 
+  #learnPage .card-body h5,
+  #learnPage .card-body p,
+  #learnPage .card-body small,
+  #learnPage .card-body ul,
+  #learnPage .card-body li { color: var(--force-text-light) !important; }
+  body.light #learnPage .header-text,
+  body.light #learnPage .card-body,
+  body.light #learnPage .small-muted,
+  body.light #learnPage .text-muted { color: var(--force-text-dark) !important; }
+  #learnPage [style*="color: black"], #learnPage [style*="color:black"] { color: var(--force-text-light) !important; }
+  
+  /* ===========================
+     Responsive adjustments
+     Breakpoints: Desktop > 992, Tablet 768-991, Mobile < 768
+     =========================== */
+  @media (max-width: 991px) {
+    html { font-size:15px; } /* slightly smaller on tablets */
+    .meta-grid{ grid-template-columns: 1fr; }
+    .notes-area{ height:140px; }
+    .choices-grid{ grid-template-columns: 1fr; }
+    #flashcard{ max-width:560px; height:200px; perspective:1000px; }
+    .logo-circle{ width:32px; height:32px; }
+  }
+  
+  @media (max-width: 767px) {
+    html { font-size:14px; } /* mobile baseline */
+    .container{ padding:12px; }
+    .topbar{ gap:10px; align-items:center; }
+    .panel{ padding:12px; border-radius:8px; }
+    .meta-grid{ grid-template-columns: 1fr; gap:10px; }
+    .notes-area{ height:120px; }
+    .choices-grid{ grid-template-columns:1fr; gap:8px; }
+    .choice-input, .quiz-question{ font-size:14px; padding:.55rem; }
+    .btn-accent, .btn-ghost{ width:100%; justify-content:center; min-height:48px; border-radius:10px; }
+    .flashcard-row{ flex-direction:column; }
+    #flashcard{ height:180px; max-width:420px; perspective:900px; }
+    #flashcard-inner{ transition:transform .55s; }
+    .flash-face{ padding:14px; border-radius:8px; }
+    .logo-circle{ width:30px; height:30px; font-size:0.9rem; }
+    .json-out{ font-size:0.88rem; max-height:200px; }
+    .muted-small{ font-size:0.82rem; }
+  }
+  
+  /* very small phones */
+  @media (max-width: 420px) {
+    html { font-size:13px; }
+    .container{ padding:10px; }
+    #flashcard{ height:160px; max-width:360px; }
+    .flash-face{ padding:12px; }
+    .btn-accent, .btn-ghost{ min-height:52px; padding:.7rem; }
+    .panel{ padding:10px; }
+  }
+  
+  /* Accessibility / focus */
+  a:focus, button:focus, .form-control:focus { outline: 3px solid rgba(0,185,229,0.12); outline-offset:2px; }
+  
+  /* Small polish: ensure long text wraps inside cards and flashfaces */
+  .card-block, .flash-face, .json-out, .quiz-block { word-break: break-word; hyphens: auto; }
+  
+  /* End of stylesheet */
+  
+  
