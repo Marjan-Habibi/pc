@@ -360,4 +360,113 @@
   
   /* End of stylesheet */
   
-  
+  /* ===========================
+  Responsive fixes tuned for iPhone 11 & similar (CSS width 414px)
+  Paste after your main stylesheet to override problematic rules
+  =========================== */
+
+/* Keep desktop base comfortable */
+html { font-size:16px; }
+
+/* Ensure form controls and buttons are comfortably large by default */
+.form-control, .form-select, textarea { min-height:48px; font-size:1rem; }
+.btn-accent, .btn-ghost { min-height:52px; padding:.6rem .95rem; font-size:1rem; }
+
+/* Strong stacking for author area: preview below inputs on narrow screens */
+.meta-grid { grid-template-columns: 1fr 320px; gap:12px; }
+
+/* Make preview card more flexible */
+.card-block.dark-card { padding:14px; }
+
+/* Improve wrapping and spacing */
+.panel { padding:16px; }
+.container { padding:16px; }
+
+/* ---------- iPhone 11 / small phones specific adjustments ---------- */
+@media (max-width: 414px) {
+  /* Slightly increase root font-size so text is naturally larger on mobile */
+  html { font-size:17px; }
+
+  /* Layout: single column, preview below form */
+  .meta-grid {
+    display:block;
+    grid-template-columns: none;
+    gap:14px;
+  }
+
+  /* Make panels and cards more touch-friendly */
+  .panel { padding:14px; border-radius:10px; }
+  .card-block.dark-card { padding:12px; border-radius:10px; }
+
+  /* Inputs: larger, roomy padding */
+  .form-control, .form-select, textarea {
+    min-height:54px;
+    padding:.7rem .75rem;
+    font-size:1rem;
+    border-radius:10px;
+  }
+
+  /* Notes area slightly taller for typing comfort */
+  .notes-area { min-height:140px; max-height:300px; }
+
+  /* Buttons full-width and visually prominent */
+  .btn-accent, .btn-ghost {
+    width:100%;
+    display:block;
+    min-height:56px;
+    padding:.8rem 1rem;
+    border-radius:12px;
+    font-size:1.03rem;
+  }
+
+  /* Preview: full width, clear hierarchy */
+  aside, .card-block { width:100%; box-sizing:border-box; }
+  #previewTitle { font-size:1.05rem; line-height:1.15; margin-bottom:6px; }
+  #previewMeta { font-size:.95rem; margin-top:2px; }
+
+  /* JSON / notes preview: comfortable height */
+  .json-out, #previewNotes { max-height:160px; font-size:0.96rem; padding:10px; }
+
+  /* Flashcard/quiz: increase tap size */
+  .choice-input, .quiz-question, .choice-input { min-height:52px; padding:.65rem; font-size:1rem; border-radius:10px; }
+
+  /* Logo circle slightly smaller but centered */
+  .logo-circle { width:36px; height:36px; font-size:0.95rem; }
+
+  /* Flashcard container adjustments */
+  #flashcard { max-width:420px; height:180px; perspective:900px; margin-left:auto; margin-right:auto; }
+  .flash-face { padding:14px; border-radius:10px; }
+
+  /* Ensure hints & small text remain readable */
+  .small-muted, .muted-small { font-size:0.95rem; opacity:0.95; }
+
+  /* Accessibility: bigger focus outline for touch navigation */
+  a:focus, button:focus, .form-control:focus {
+    outline: 3px solid rgba(0,185,229,0.16);
+    outline-offset:2px;
+  }
+
+  /* Prevent inputs from shrinking when keyboard opens (iOS) */
+  input, textarea, select { -webkit-user-modify: read-write-plaintext-only; }
+
+  /* Avoid text overflow in tight places */
+  .panel-header, .card-block, .previewTitle, #previewNotes { word-break:break-word; hyphens:auto; }
+
+  /* Reduce visual density of lists / grids */
+  .choices-grid { gap:8px; grid-template-columns:1fr; }
+
+  /* Small extra spacing under form elements to avoid cramped layout */
+  .meta-grid > * { margin-bottom:8px; }
+
+  /* Keep Save button visible: make it sticky at bottom if needed (optional) */
+  /* uncomment if you want a sticky save bar:
+  .author-save-bar {
+    position:fixed; left:0; right:0; bottom:0; padding:10px; background:linear-gradient(180deg, rgba(11,18,32,0.95), rgba(11,18,32,0.98)); box-shadow:0 -6px 20px rgba(0,0,0,0.25); z-index:999;
+  }
+  */
+}
+
+/* Extra safety: if something earlier forced font-size tiny, override with important */
+@media (max-width: 414px) {
+  html, body, .container { -webkit-text-size-adjust:100% !important; font-size:17px !important; }
+}
