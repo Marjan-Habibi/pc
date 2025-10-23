@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pocket Classroom — Library</title>
+  <style>
+    :root{
+      --bg-1: #081822;
+      --bg-2: #0f1b29;
+      --panel: rgba(255,255,255,0.03);
+      --muted: rgba(255,255,255,0.55);
+      --accent: #2bd1c9;
+      --danger: #c94a59;
+      --radius: 12px;
+      --gap: 16px;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;min-height:100%;padding:28px;
+      background: radial-gradient(800px 400px at 10% 10%, rgba(43,56,73,0.35), transparent),
+                  radial-gradient(600px 300px at 90% 90%, rgba(20,30,40,0.25), transparent),
+                  linear-gradient(180deg,var(--bg-1),var(--bg-2));
+      color:#e6eef2;
+    }
+
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:1200px;margin:0 auto 28px;padding:10px 16px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,#ffd27a,#ff7aa3);display:flex;align-items:center;justify-content:center;font-weight:700;color:#0b1a1f;font-size:16px}
+    .brand h1{margin:0;font-size:18px}
+    .nav{display:flex;gap:12px;align-items:center;font-size:15px}
+    .nav a{padding:8px 14px;border-radius:999px;text-decoration:none;color:var(--muted);background:transparent}
+    .nav a.active{background:rgba(43,209,201,0.12);color:var(--accent);box-shadow:0 6px 18px rgba(43,209,201,0.06)}
+
+    .container{max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+    .panel{background:var(--panel);border-radius:14px;padding:26px;box-shadow:0 8px 30px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.02)}
+    .panel-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+    .title{font-size:20px;margin:0 0 6px}
+    .subtitle{color:var(--muted);font-size:13px;margin:0}
+
+    .actions{display:flex;gap:10px;align-items:center}
+    .btn{background:linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04);padding:8px 12px;border-radius:8px;color:var(--muted);text-decoration:none;font-weight:600;font-size:13px;display:inline-flex;gap:8px;align-items:center;cursor:pointer}
+    .btn.primary{background:linear-gradient(90deg,#123a44,rgba(43,209,201,0.08));color:var(--accent)}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.03)}
+
+    .capsules{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:var(--gap);margin-top:18px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));border-radius:12px;padding:16px;border:1px solid rgba(255,255,255,0.02);min-height:140px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+    .meta{display:flex;justify-content:space-between;align-items:flex-start}
+    .card h3{margin:0;font-size:16px}
+    .tags{color:var(--muted);font-size:12px}
+    .pill{padding:6px 10px;border-radius:8px;font-size:13px;background:rgba(255,255,255,0.02);color:var(--muted);border:1px solid rgba(255,255,255,0.02)}
+
+    .footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+    .cta{display:flex;gap:8px}
+    .small-btn{padding:6px 10px;border-radius:8px;font-size:13px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);cursor:pointer}
+    .small-btn.edit{color:#ffd27a}
+    .small-btn.export{color:#9fd2ff}
+    .small-btn.delete{background:var(--danger);color:white;border:none}
+
+    .card:hover{transform:translateY(-6px);transition:all .22s ease}
+    .empty{padding:28px;text-align:center;color:var(--muted)}
+
+    /* Modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,10,0.6);display:none;align-items:center;justify-content:center;z-index:60}
+    .modal{background:linear-gradient(180deg,#07121a,#07141a);border-radius:10px;padding:18px;min-width:320px;max-width:680px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 20px 60px rgba(0,0,0,0.7)}
+    .modal h3{margin:0 0 8px}
+    .field{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+    .field input[type="text"],.field textarea{padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+    .row{display:flex;gap:8px}
+
+    .muted{color:var(--muted);font-size:13px}
+
+    @media (max-width:720px){.nav{display:none}.panel{padding:14px}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">PC</div>
+      <div>
+        <h1 style="margin:0">Pocket Classroom</h1>
+        <div style="font-size:12px;color:var(--muted);margin-top:3px">Demo</div>
+      </div>
+    </div>
+
+    <nav class="nav" aria-label="main navigation">
+      <a class="active" href="#">Library</a>
+      <a href="#">Author</a>
+      <a href="#">Learn</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="panel">
+      <div class="panel-header">
+        <div>
+          <h2 class="title">Your Capsules</h2>
+          <p class="subtitle">Create, import, export, and manage learning capsules. All data stays in your browser.</p>
+        </div>
+
+        <div class="actions">
+          <label class="btn ghost" for="importFile">Import JSON</label>
+          <input type="file" id="importFile" accept="application/json" style="display:none">
+          <button id="btnNew" class="btn primary">+ New Capsule</button>
+        </div>
+      </div>
+
+      <div id="capsules" class="capsules" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <div id="modalBackdrop" class="modal-backdrop" role="dialog" aria-hidden="true">
+    <div class="modal" role="document">
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+
+  <script>
+    /**************************************************************************
+     Updated Library script:
+     - Reads capsules saved by Author page using keys:
+         pc_capsules_index  (array of {id,title,subject,level,updatedAt})
+         pc_capsule_<id>    (full capsule JSON)
+       If pc_capsules_index exists it will populate the UI from that.
+     - Falls back to the previous local key (pocket_capsules_v1) if no index.
+     - Listens for storage events so Library updates when Author saves from another tab.
+    **************************************************************************/
+
+    const INDEX_KEY = 'pc_capsules_index';         // Author's index key (recommended)
+    const CAPSULE_PREFIX = 'pc_capsule_';          // Author's full capsule key prefix
+    const LEGACY_STORAGE_KEY = 'pocket_capsules_v1' // fallback if index not present
+
+    // app state
+    let capsules = [];
+
+    // DOM refs
+    const capsulesRoot = document.getElementById('capsules');
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const modalContent = document.getElementById('modalContent');
+    const importFile = document.getElementById('importFile');
+    const btnNew = document.getElementById('btnNew');
+
+    // wire UI
+    modalBackdrop.addEventListener('click', function(e){
+      if(e.target === modalBackdrop) hideModal();
+    });
+    btnNew.addEventListener('click', openCreateModal);
+    importFile.addEventListener('change', handleImportFile);
+
+    // storage event: update when other tab (Author) saves
+    window.addEventListener('storage', (ev) => {
+      if(ev.key === INDEX_KEY || (ev.key && ev.key.startsWith(CAPSULE_PREFIX))) {
+        // re-load capsules from author storage
+        loadFromAuthorStorage();
+        renderCards();
+      }
+    });
+
+    // initial load: prefer Author storage (pc_capsules_index), fallback to legacy key
+    loadFromAuthorStorage() || loadFromLegacy();
+    renderCards();
+
+    // ----- load helpers -----
+    function loadFromAuthorStorage(){
+      try{
+        const rawIndex = localStorage.getItem(INDEX_KEY);
+        if(!rawIndex) return false;
+        const index = JSON.parse(rawIndex);
+        if(!Array.isArray(index)) return false;
+
+        // index contains entries like {id,title,subject,level,updatedAt}
+        // for each entry, attempt to read pc_capsule_<id>
+        capsules = index.map(entry => {
+          try{
+            const raw = localStorage.getItem(CAPSULE_PREFIX + entry.id);
+            if(raw){
+              const full = JSON.parse(raw);
+              // normalize fields expected by UI
+              return {
+                id: full.id || entry.id,
+                title: full.meta?.title || entry.title || 'Untitled',
+                level: full.meta?.level || entry.level || '—',
+                updated: full.updatedAt ? timeAgo(full.updatedAt) : (entry.updatedAt || 'now'),
+                category: full.meta?.subject || entry.subject || '—',
+                quiz: (full.quiz && full.quiz.length) ? String(full.quiz.length) : (entry.quiz || '—'),
+                known: getKnownCount(full.id)
+              };
+            }else{
+              // if full capsule not present, fall back to index values
+              return {
+                id: entry.id,
+                title: entry.title || 'Untitled',
+                level: entry.level || '—',
+                updated: entry.updatedAt ? timeAgo(entry.updatedAt) : '—',
+                category: entry.subject || '—',
+                quiz: entry.quiz || '—',
+                known: getKnownCount(entry.id)
+              };
+            }
+          }catch(e){
+            return {
+              id: entry.id,
+              title: entry.title || 'Untitled',
+              level: entry.level || '—',
+              updated: entry.updatedAt ? timeAgo(entry.updatedAt) : '—',
+              category: entry.subject || '—',
+              quiz: entry.quiz || '—',
+              known: getKnownCount(entry.id)
+            };
+          }
+        });
+
+        return true;
+      }catch(e){
+        console.warn('loadFromAuthorStorage failed', e);
+        return false;
+      }
+    }
+
+    function loadFromLegacy(){
+      try{
+        const raw = localStorage.getItem(LEGACY_STORAGE_KEY);
+        if(!raw) {
+          // default demo items
+          capsules = [
+            {id: genId(), title:'Intro to DOM', level:'Advanced', updated:'1m', category:'Web', quiz:'few', known:1},
+            {id: genId(), title:'Intro to Web Basics', level:'Beginner', updated:'4m', category:'Web', quiz:'test', known:0}
+          ];
+          return;
+        }
+        capsules = JSON.parse(raw);
+      }catch(e){
+        console.warn('loadFromLegacy failed', e);
+        capsules = [];
+      }
+    }
+
+    // helper to get known flashcards count/progress from pc_progress_<id> or similar (safe)
+    function getKnownCount(capsuleId){
+      try{
+        const key = 'pc_progress_' + capsuleId;
+        const raw = localStorage.getItem(key);
+        if(!raw) return 0;
+        const p = JSON.parse(raw);
+        // p.knownFlashcards may be array of indexes
+        if(Array.isArray(p.knownFlashcards)) return p.knownFlashcards.length;
+        if(typeof p.known === 'number') return p.known;
+        if(typeof p.bestScore === 'number') return p.bestScore;
+        return 0;
+      }catch(e){ return 0; }
+    }
+
+    // ----- render ----- 
+    function renderCards(){
+      capsulesRoot.innerHTML = '';
+      if(!capsules || capsules.length === 0){
+        const empty = document.createElement('div');
+        empty.className = 'empty';
+        empty.textContent = 'No capsules yet — create your first capsule.';
+        capsulesRoot.appendChild(empty);
+        return;
+      }
+
+      capsules.forEach(c => {
+        const article = document.createElement('article');
+        article.className = 'card';
+
+        // top: title & tags
+        const top = document.createElement('div');
+        const meta = document.createElement('div'); meta.className = 'meta';
+        const h3 = document.createElement('h3'); h3.textContent = c.title;
+        const tags = document.createElement('div'); tags.className = 'tags';
+        tags.textContent = `${c.level} · Updated ${c.updated}`;
+        meta.appendChild(h3); meta.appendChild(tags);
+
+        const p = document.createElement('p');
+        p.style.margin = '12px 0 0';
+        p.style.color = 'var(--muted)';
+        p.style.fontSize = '13px';
+        p.textContent = `${c.category} · Quiz: ${c.quiz} · Known cards: ${String(c.known)}`;
+
+        top.appendChild(meta); top.appendChild(p);
+
+        // footer + controls
+        const footer = document.createElement('div'); footer.className = 'footer';
+        const cta = document.createElement('div'); cta.className = 'cta';
+
+        const btnLearn = document.createElement('button');
+        btnLearn.className = 'small-btn learn';
+        btnLearn.textContent = '▶ Learn';
+        btnLearn.dataset.id = c.id;
+        btnLearn.addEventListener('click', e => openLearnModal(e.currentTarget.dataset.id));
+
+        const btnEdit = document.createElement('button');
+        btnEdit.className = 'small-btn edit';
+        btnEdit.textContent = '✎ Edit';
+        btnEdit.dataset.id = c.id;
+        btnEdit.addEventListener('click', e => openEditModal(e.currentTarget.dataset.id));
+
+        const btnExport = document.createElement('button');
+        btnExport.className = 'small-btn export';
+        btnExport.textContent = '⇪ Export';
+        btnExport.dataset.id = c.id;
+        btnExport.addEventListener('click', e => exportOne(e.currentTarget.dataset.id));
+
+        cta.appendChild(btnLearn);
+        cta.appendChild(btnEdit);
+        cta.appendChild(btnExport);
+
+        const btnDelete = document.createElement('button');
+        btnDelete.className = 'small-btn delete';
+        btnDelete.textContent = 'Delete';
+        btnDelete.dataset.id = c.id;
+        btnDelete.addEventListener('click', e => deleteCapsule(e.currentTarget.dataset.id));
+
+        footer.appendChild(cta);
+        footer.appendChild(btnDelete);
+
+        article.appendChild(top);
+        article.appendChild(footer);
+        capsulesRoot.appendChild(article);
+      });
+    }
+
+    // ----- modals / CRUD (unchanged behavior, but save will write into this UI's array and also maintain author-style storage if appropriate) -----
+    function openCreateModal(){
+      showModal(`
+        <h3>Create Capsule</h3>
+        <div class="field"><label>Title</label><input id="mTitle" type="text" placeholder="e.g. Intro to CSS"></div>
+        <div class="field"><label>Level</label><input id="mLevel" type="text" placeholder="Beginner / Advanced"></div>
+        <div class="field"><label>Category</label><input id="mCategory" type="text" placeholder="Web"></div>
+        <div class="field"><label>Quiz</label><input id="mQuiz" type="text" placeholder="few/test"></div>
+        <div class="row" style="justify-content:flex-end"><button class="btn" id="mCancel">Cancel</button><button class="btn primary" id="mSave">Create</button></div>
+      `);
+      document.getElementById('mCancel').addEventListener('click', hideModal);
+      document.getElementById('mSave').addEventListener('click', ()=>{
+        const title = document.getElementById('mTitle').value.trim();
+        if(!title){ alert('Title is required'); return; }
+        const newCaps = {
+          id: genId(),
+          title,
+          level: document.getElementById('mLevel').value || '—',
+          updated: 'now',
+          category: document.getElementById('mCategory').value || '—',
+          quiz: document.getElementById('mQuiz').value || '—',
+          known: 0
+        };
+        capsules.unshift(newCaps);
+        saveToStorage(); // save in this UI's storage (legacy key) AND try to update author index if present
+        renderCards();
+        hideModal();
+      });
+    }
+
+    function openEditModal(id){
+      const c = capsules.find(x=>x.id===id);
+      if(!c){ alert('Not found'); return; }
+      showModal(`
+        <h3>Edit Capsule</h3>
+        <div class="field"><label>Title</label><input id="mTitle" type="text" value="${escapeHtml(c.title)}"></div>
+        <div class="field"><label>Level</label><input id="mLevel" type="text" value="${escapeHtml(c.level)}"></div>
+        <div class="field"><label>Category</label><input id="mCategory" type="text" value="${escapeHtml(c.category)}"></div>
+        <div class="field"><label>Quiz</label><input id="mQuiz" type="text" value="${escapeHtml(c.quiz)}"></div>
+        <div class="row" style="justify-content:flex-end"><button class="btn" id="mCancel">Cancel</button><button class="btn primary" id="mSave">Save</button></div>
+      `);
+      document.getElementById('mCancel').addEventListener('click', hideModal);
+      document.getElementById('mSave').addEventListener('click', ()=>{
+        c.title = document.getElementById('mTitle').value.trim() || c.title;
+        c.level = document.getElementById('mLevel').value || c.level;
+        c.category = document.getElementById('mCategory').value || c.category;
+        c.quiz = document.getElementById('mQuiz').value || c.quiz;
+        c.updated = 'now';
+        saveToStorage();
+        renderCards();
+        hideModal();
+      });
+    }
+
+    function openLearnModal(id){
+      const c = capsules.find(x=>x.id===id);
+      if(!c){ alert('Not found'); return; }
+      showModal(`
+        <h3>Learn — ${escapeHtml(c.title)}</h3>
+        <p class="muted">Category: ${escapeHtml(c.category)} · Level: ${escapeHtml(c.level)} · Known cards: ${escapeHtml(String(c.known))}</p>
+        <div style="margin-top:12px"><p style="color:var(--muted)">This is a demo learning view. In the real app you would launch the study interface here.</p></div>
+        <div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn" id="mClose">Close</button><button class="btn primary" id="mInc">Mark +1 Known</button></div>
+      `);
+      document.getElementById('mClose').addEventListener('click', hideModal);
+      document.getElementById('mInc').addEventListener('click', ()=>{
+        c.known = (Number(c.known)||0) + 1;
+        saveToStorage();
+        renderCards();
+        hideModal();
+      });
+    }
+
+    function deleteCapsule(id){
+      if(!confirm('Delete this capsule?')) return;
+      // remove from author storage if index exists
+      try{
+        const rawIndex = localStorage.getItem(INDEX_KEY);
+        if(rawIndex){
+          const idx = JSON.parse(rawIndex);
+          const newIdx = idx.filter(x=>x.id !== id);
+          localStorage.setItem(INDEX_KEY, JSON.stringify(newIdx));
+          // also remove full capsule if exists
+          localStorage.removeItem(CAPSULE_PREFIX + id);
+        }
+      }catch(e){ console.warn(e); }
+      // remove from local list
+      capsules = capsules.filter(x=>x.id !== id);
+      saveToStorage();
+      renderCards();
+    }
+
+    function exportOne(id){
+      // try to export full capsule (Author's key) if exists; else export UI item
+      try{
+        const raw = localStorage.getItem(CAPSULE_PREFIX + id);
+        if(raw){
+          const blob = new Blob([raw], {type:'application/json'});
+          downloadBlob(blob, `${safeFileName(id)}.json`);
+          return;
+        }
+      }catch(e){ /*ignore*/ }
+      const c = capsules.find(x=>x.id===id);
+      if(!c){ alert('Not found'); return; }
+      const blob = new Blob([JSON.stringify(c, null, 2)], {type:'application/json'});
+      downloadBlob(blob, `${safeFileName(c.title)}.json`);
+    }
+
+    function handleImportFile(e){
+      const file = e.target.files[0]; if(!file) return;
+      const reader = new FileReader();
+      reader.onload = function(){
+        try{
+          const data = JSON.parse(reader.result);
+          if(Array.isArray(data)){
+            data.forEach(item => { if(!item.id) item.id = genId(); });
+            capsules = data.concat(capsules);
+          }else if(typeof data === 'object' && data !== null){
+            data.id = data.id || genId();
+            capsules.unshift(data);
+          }else{ throw new Error('Invalid JSON'); }
+          saveToStorage();
+          renderCards();
+          alert('Import successful');
+        }catch(err){
+          alert('Failed to import: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    }
+
+    // ----- storage persistence -----
+    function saveToStorage(){
+      try{
+        // Save legacy UI array (keeps backwards compatibility)
+        localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(capsules));
+        // Also, if Author index exists, try to reflect changes there:
+        try{
+          const rawIndex = localStorage.getItem(INDEX_KEY);
+          if(rawIndex){
+            // update index entries for any capsules currently in UI
+            const idx = JSON.parse(rawIndex);
+            // create map for quick lookup
+            const map = new Map(idx.map(x=>[x.id, x]));
+            // sync title/subject/level/updatedAt when possible
+            capsules.forEach(c => {
+              if(map.has(c.id)){
+                const e = map.get(c.id);
+                e.title = c.title;
+                e.subject = c.category || e.subject;
+                e.level = c.level || e.level;
+                e.updatedAt = new Date().toISOString();
+              }else{
+                // add a minimal index entry if not present
+                map.set(c.id, { id: c.id, title: c.title, subject: c.category || '', level: c.level || '', updatedAt: new Date().toISOString() });
+              }
+            });
+            const newIdx = Array.from(map.values());
+            localStorage.setItem(INDEX_KEY, JSON.stringify(newIdx));
+            // attempt to write minimal full capsule objects under pc_capsule_<id>
+            capsules.forEach(c => {
+              const minimalFull = {
+                schema: 'pocket-classroom/v1',
+                id: c.id,
+                meta: { title: c.title, subject: c.category, level: c.level, description: '' },
+                notes: [],
+                flashcards: [],
+                quiz: [],
+                updatedAt: new Date().toISOString()
+              };
+              localStorage.setItem(CAPSULE_PREFIX + c.id, JSON.stringify(minimalFull));
+            });
+          }
+        }catch(e){ /* non-fatal */ }
+      }catch(e){ console.warn('saveToStorage failed', e); }
+    }
+
+    // ----- modal helpers -----
+    function showModal(html){
+      modalContent.innerHTML = html;
+      modalBackdrop.style.display = 'flex';
+      modalBackdrop.setAttribute('aria-hidden','false');
+      const first = modalContent.querySelector('input, button, textarea, [tabindex]');
+      if(first) first.focus();
+    }
+    function hideModal(){
+      modalBackdrop.style.display = 'none';
+      modalBackdrop.setAttribute('aria-hidden','true');
+      modalContent.innerHTML = '';
+    }
+
+    // ----- utilities -----
+    function genId(){ return 'c_' + Math.random().toString(36).slice(2,10); }
+    function downloadBlob(blob, filename){
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    }
+    function escapeHtml(s){ return String(s).replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m] }); }
+    function safeFileName(s){ return String(s).replace(/[^a-z0-9\-\_ ]/ig,'').slice(0,40).replace(/ /g,'_') }
+
+    // helper: simple timeAgo formatter for index display
+    function timeAgo(iso){
+      try{
+        const d = new Date(iso);
+        const diff = Math.floor((Date.now() - d.getTime())/1000);
+        if(diff < 60) return diff + 's';
+        if(diff < 3600) return Math.floor(diff/60) + 'm';
+        if(diff < 86400) return Math.floor(diff/3600) + 'h';
+        return Math.floor(diff/86400) + 'd';
+      }catch(e){ return 'now'; }
+    }
+
+    // small helper swap (not used here but handy)
+    function swap(a,i,j){ [a[i],a[j]] = [a[j],a[i]]; }
+  </script>
+</body>
+</html>

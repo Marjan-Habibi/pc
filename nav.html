@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pocket Classroom</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
+
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ---------- theme similar to palettemaker.app ---------- */
+    :root{
+      --nav-bg: #0f1724;
+      --muted: #9aa4b2;
+      --accent: #00b9e5;
+      --radius: 12px;
+      --bg: linear-gradient(180deg,#0b1220 0%, #071021 100%);
+      --text: #e6eefc;
+    }
+
+    body{
+      margin:0;
+      font-family: Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height:100vh;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:28px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .site-header {
+      max-width:1100px;
+      margin:0 auto;
+    }
+
+    .navbar {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      box-shadow: 0 8px 30px rgba(2,6,23,0.6), 0 1px 0 rgba(255,255,255,0.02) inset;
+      backdrop-filter: blur(6px) saturate(120%);
+      transition: background 0.3s ease;
+    }
+
+    .brand {
+      display:flex;
+      gap:10px;
+      align-items:center;
+      text-decoration:none;
+      color: #ffffff;
+      font-weight:700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand .logo {
+      width:36px;
+      height:36px;
+      border-radius:8px;
+      display:inline-grid;
+      place-items:center;
+      background: linear-gradient(135deg,#7c3aed,#06b6d4);
+      font-weight:800;
+      color:white;
+      font-size:16px;
+    }
+
+    .nav-link {
+      color: rgba(226,232,240,0.9) !important;
+      font-weight:600;
+      padding:8px 12px;
+      border-radius:8px;
+      transition: .18s ease;
+    }
+    .nav-link:hover {
+      color: #ffffff !important;
+      background: rgba(255,255,255,0.02);
+      transform: translateY(-3px);
+      text-decoration:none;
+    }
+
+    .nav-link.active {
+      color: white !important;
+      background: linear-gradient(90deg, rgba(96,165,250,0.12), rgba(99,102,241,0.08));
+      box-shadow: 0 6px 20px rgba(96,165,250,0.06);
+    }
+
+    .nav-actions {
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+
+    .icon-btn {
+      background: transparent;
+      border:1px solid rgba(255,255,255,0.04);
+      color:var(--muted);
+      padding:8px;
+      border-radius:8px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:40px;
+      transition: all 0.3s ease;
+    }
+    .icon-btn:hover { color:#fff; border-color: rgba(255,255,255,0.08) }
+
+    .cta {
+      background: linear-gradient(90deg,#60a5fa,#7dd3fc);
+      color: #05203a;
+      padding:8px 14px;
+      border-radius:10px;
+      font-weight:700;
+      box-shadow: 0 8px 30px rgba(96,165,250,0.08);
+      border: none;
+    }
+
+    @media (max-width: 992px) {
+      .brand .text { display:none; }
+    }
+
+    /* -------- Light Mode -------- */
+    body.light {
+      background: linear-gradient(180deg,#f5f5f5 0%, #dcdfe3 100%);
+      color: #0b1220;
+    }
+    body.light .navbar {
+      background: rgba(255,255,255,0.7);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    body.light .nav-link { color:#333 !important; }
+    body.light .nav-link.active { background: rgba(96,165,250,0.12); }
+    body.light .icon-btn { color:#333; border-color:rgba(0,0,0,0.08); }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="navbar navbar-expand-lg">
+      <div class="container-fluid">
+        <a class="brand" href="index.html" aria-label="Home">
+          <span class="logo">PC</span>
+          <span class="text">Pocket<span style="color:#7dd3fc">Classroom</span></span>
+        </a>
+
+        <button class="navbar-toggler btn btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#topNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="topNav">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+            <li class="nav-item"><a class="nav-link" href="library.html">Library</a></li>
+            <li class="nav-item"><a class="nav-link" href="author.html">Author</a></li>
+            <li class="nav-item"><a class="nav-link active" href="index.html">Learn</a></li>
+          </ul>
+
+          <div class="nav-actions ms-lg-3 d-flex align-items-center">
+            <button class="icon-btn" id="themeToggle" aria-label="Theme" title="Theme">
+              <i class="bi bi-sun-fill"></i>
+            </button>
+            <a href="https://palettemaker.com/app" class="btn cta ms-2" target="_blank" rel="noopener">Open App</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+
+<!-- Learn -->
+<main id="learnPage" class="container-fluid py-4">
+ 
+<main class="container-fluid py-4">
+  <div class="row gx-4 justify-content-center">
+
+    <!-- center content -->
+    <div class="col-12 col-lg-9">
+      <div class="card dark-card mb-4">
+        <div class="card-body">
+
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <!-- قبلی -->
+            <!-- جدید: حذف استایل خطی و اضافه کردن کلاس مفهومی -->
+<div class="header-text">
+  <h5 class="mb-1">Learn</h5>
+  <small class="text-muted">Study a capsule in Notes, Flashcards, or Quiz mode</small>
+</div>
+
+            <div class="d-flex align-items-center gap-2">
+              <select id="capsuleSelect" class="form-select form-select-sm me-2" style="min-width:180px;">
+                <option value="web">Intro to Web Basics</option>
+                <option value="html">HTML Basics</option>
+              </select>
+              <button id="exportBtn" class="btn btn-sm" style="background-color: var(--accent); color: #F6EFD2;"><i class="bi bi-download"></i> Export</button>
+            </div>
+          </div>
+
+          <!-- Tabs -->
+          <ul class="nav nav-pills mb-3" id="modeTabs">
+            <li class="nav-item"><a class="nav-link" data-mode="notes" href="#">Notes</a></li>
+            <li class="nav-item"><a class="nav-link active" data-mode="flash" href="#">Flashcards</a></li>
+            <li class="nav-item"><a class="nav-link" data-mode="quiz" href="#">Quiz</a></li>
+          </ul>
+
+          <!-- Content container -->
+          <div class="card flashcard-card">
+            <div class="card-body p-4 d-flex flex-column">
+
+              <!-- progress / controls row -->
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="small text-muted"> <span id="progressLabel">1 / 3</span> • Press <kbd>space</kbd> to flip</div>
+                <div class="d-flex gap-2 align-items-center">
+                  <button id="prevBtn" class="btn btn-sm btn-outline-light"><i class="bi bi-chevron-left"></i></button>
+                  <button id="nextBtn" class="btn btn-sm btn-outline-light"><i class="bi bi-chevron-right"></i></button>
+                </div>
+              </div>
+
+              <!-- Mode panes -->
+              <!-- NOTES PANE -->
+              <div id="notesPane" class="pane">
+                <!-- Notes content -->
+                <div class="card p-3 mb-3">
+                  <h6>Notes — Intro to Web</h6>
+                  <p class="muted-small">These are short capsule notes. You can edit this text or replace with server content.</p>
+                  <ul>
+                    <li>Web = Browser + Server + HTML/CSS/JS</li>
+                    <li>HTML provides structure</li>
+                    <li>CSS provides presentation</li>
+                    <li>JS provides behavior</li>
+                  </ul>
+                </div>
+
+                <!-- Quick action to switch to quiz about notes -->
+                <div class="d-flex gap-2">
+                  <button id="startQuizFromNotes" class="btn btn-sm btn-warning">Start Quiz</button>
+                  <button id="backToFlashFromNotes" class="btn btn-sm btn-outline-secondary">Go to Flashcards</button>
+                </div>
+              </div>
+
+              <!-- FLASHCARDS PANE (default visible) -->
+              <div id="flashPane" class="pane active">
+
+                <div class="card p-4" style="position:relative">
+                  <div class="d-flex align-items-center mb-3">
+                    <h5 class="mb-0">Flashcards — HTML Capsule</h5>
+                    <span class="badge bg-secondary ms-2">Level: Beginner</span>
+                  </div>
+
+                  <!-- Flashcard area -->
+                  <div id="flashcard" class="shadow-sm rounded" aria-label="flashcard" role="button">
+                    <div id="flashcard-inner">
+                      <!-- Front face -->
+                      <div class="flash-face front">
+                        <pre id="cardFront" style="margin:0; font-size:1.25rem;">HTML</pre>
+                      </div>
+
+                      <!-- Back face -->
+                      <div class="flash-face back">
+                        <pre id="cardBack" style="margin:0; font-size:1.05rem;">HyperText Markup Language — basic structure</pre>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <!-- progress + actions -->
+                <div class="d-flex align-items-center gap-3 w-100 mt-3">
+                  <div class="small text-muted">Progress</div>
+                  <div class="progress" style="width:160px; height:8px;">
+                    <div id="mainProgress" class="progress-bar" role="progressbar" style="width:33%"></div>
+                  </div>
+
+                  <div class="d-flex gap-2 ms-auto">
+                    <button id="markUnknown" class="btn btn-outline-danger btn-sm">Mark Unknown</button>
+                    <button id="markKnown" class="btn btn-success btn-sm">Mark Known</button>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- QUIZ PANE -->
+              <div id="quizPane" class="pane">
+                <div class="card p-3 mb-3">
+                  <h6>Quiz — Quick Check</h6>
+                  <div id="quizArea">
+                    <!-- Quiz content populated by JS -->
+                    <p class="muted-small">Loading quiz...</p>
+                  </div>
+                </div>
+                <div class="d-flex gap-2">
+                  <button id="restartQuiz" class="btn btn-sm btn-outline-primary">Restart Quiz</button>
+                  <button id="backToFlashFromQuiz" class="btn btn-sm btn-outline-secondary">Back to Flashcards</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+</main>
+
+
+ <!-- Library -->
+<!-- <main id="libraryPage" class="container">
+    <main class="container">
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h2 class="title">Your Capsules</h2>
+              <p class="subtitle">Create, import, export, and manage learning capsules. All data stays in your browser.</p>
+            </div>
+    
+            <div class="actions">
+              <label class="btn ghost" for="importFile">Import JSON</label>
+              <input type="file" id="importFile" accept="application/json" style="display:none">
+              <button id="btnNew" class="btn primary">+ New Capsule</button>
+            </div>
+          </div>
+    
+          <div id="capsules" class="capsules" aria-live="polite"></div>
+        </section>
+      </main>
+    
+      <div id="modalBackdrop" class="modal-backdrop" role="dialog" aria-hidden="true">
+        <div class="modal" role="document">
+          <div id="modalContent"></div>
+        </div>
+      </div>
+      </main>
+       -->
+
+       <!-- ====== Library (replace the broken nested mains) ====== -->
+<section id="libraryPage" class="container my-4">
+  <div class="container">
+    <section class="panel">
+      <div class="panel-header d-flex justify-content-between align-items-start">
+        <div>
+          <h2 class="title">Your Capsules</h2>
+          <p class="subtitle">Create, import, export, and manage learning capsules. All data stays in your browser.</p>
+        </div>
+
+        <div class="actions d-flex align-items-center gap-2">
+          <label class="btn btn-outline-secondary mb-0" for="importFile">Import JSON</label>
+          <input type="file" id="importFile" accept="application/json" style="display:none">
+          <button id="btnNew" class="btn btn-primary">+ New Capsule</button>
+        </div>
+      </div>
+
+      <div id="capsules" class="capsules mt-3" aria-live="polite"></div>
+    </section>
+  </div>
+
+  <div id="modalBackdrop" class="modal-backdrop" role="dialog" aria-hidden="true" style="display:none">
+    <div class="modal" role="document">
+      <div id="modalContent"></div>
+    </div>
+  </div>
+</section>
+<!-- ====== end Library ====== -->
+
+
+     <!-- Author -->
+<div id="authorPage" class="container my-4">
+  <div class="container my-4">
+    <div class="topbar">
+      <div>
+        <h4 class="m-0">Pocket Classroom</h4>
+        <div class="small-muted">Author Capsule — draft notes, flashcards, and quizzes. Auto-saves locally.</div>
+      </div>
+      <div>
+        <button id="btn-back" class="btn btn-ghost btn-sm me-2">← Back</button>
+        <button id="btn-save" class="btn btn-accent btn-sm">Save</button>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <!-- meta -->
+      <div class="col-12 col-md-6">
+        <section class="panel">
+          <div class="section-title">Meta</div>
+          <div class="meta-grid">
+            <div>
+              <label class="small-muted">Title <span style="color:var(--danger)">*</span></label>
+              <input id="meta-title" class="form-control compact-input" placeholder="Introduction to Unity" />
+              <div id="err-title" class="text-danger small d-none">Title required</div>
+              <div class="mt-2">
+                <label class="small-muted">Description</label>
+                <textarea id="meta-desc" class="form-control" rows="3" placeholder="Short description"></textarea>
+              </div>
+            </div>
+            <div>
+              <label class="small-muted">Notes (quick)</label>
+              <textarea id="notes-side" class="form-control notes-area" placeholder="Short notes..."></textarea>
+            </div>
+          </div>
+
+          <div class="row mt-3 g-2">
+            <div class="col-6">
+              <label class="small-muted">Subject</label>
+              <input id="meta-subject" class="form-control compact-input" placeholder="Gaming" />
+            </div>
+            <div class="col-6">
+              <label class="small-muted">Level</label>
+              <select id="meta-level" class="form-select compact-input">
+                <option>Beginner</option><option>Intermediate</option><option>Advanced</option>
+              </select>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- main notes -->
+      <div class="col-12 col-md-6">
+        <section class="panel">
+          <div class="section-title">Notes <span class="small-muted">(one idea per line)</span></div>
+          <textarea id="notes-area" class="form-control notes-area" placeholder="Unity is used for developing infrastructure and making games including 2D or 3D games..."></textarea>
+        </section>
+      </div>
+
+      <!-- flashcards -->
+      <div class="col-12 col-md-6">
+        <section class="panel">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="section-title m-0">Flashcards</div>
+            <div>
+              <button id="add-flashcard" class="btn btn-ghost btn-sm">+ Add</button>
+              <button id="clear-flashcards" class="btn btn-ghost btn-sm ms-1">Clear</button>
+            </div>
+          </div>
+          <div id="flashcards-list"></div>
+          <div id="flashcards-empty" class="small-muted mt-2">No flashcards yet.</div>
+        </section>
+      </div>
+
+      <!-- quiz -->
+      <div class="col-12 col-md-6">
+        <section class="panel">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="section-title m-0">Quiz</div>
+            <div>
+              <button id="add-quiz" class="btn btn-ghost btn-sm">+ Add</button>
+              <button id="clear-quiz" class="btn btn-ghost btn-sm ms-1">Clear</button>
+            </div>
+          </div>
+
+          <div id="quiz-list"></div>
+          <div id="quiz-empty" class="small-muted mt-2">No quiz questions yet.</div>
+        </section>
+      </div>
+    </div>
+
+    <!-- preview + json -->
+    <div class="row mt-3">
+      <div class="col-12">
+        <section class="panel d-flex gap-3 align-items-start">
+          <div style="flex:1">
+            <div class="small-muted">Preview</div>
+            <div id="preview-area" class="card-block mt-2">Title will appear after typing</div>
+          </div>
+          <div style="width:420px">
+            <div class="small-muted">Capsule JSON (saved)</div>
+            <pre id="json-out" class="json-out mt-2">{ /* capsule JSON appears after Save */ }</pre>
+            <div class="d-flex gap-2 mt-2">
+              <input id="import-file" type="file" accept="application/json" class="form-control form-control-sm" />
+              <button id="btn-export" class="btn btn-ghost btn-sm">Export</button>
+              <button id="btn-new" class="btn btn-ghost btn-sm">New</button>
+              <button id="btn-clear-draft" class="btn btn-ghost btn-sm">Clear Draft</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+</main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Theme toggle
+    const toggle = document.getElementById("themeToggle");
+    const icon = toggle.querySelector("i");
+    toggle.addEventListener("click", () => {
+      document.body.classList.toggle("light");
+      icon.classList.toggle("bi-sun-fill");
+      icon.classList.toggle("bi-moon-fill");
+    });
+  
+    // صفحات
+    const pages = {
+      learn: document.querySelector('#learnPage'),
+      library: document.querySelector('#libraryPage'),
+      author: document.querySelector('#authorPage')
+    };
+  
+    // ابتدا فقط Learn
+    Object.values(pages).forEach(p => p.style.display = 'none');
+    pages.learn.style.display = 'block';
+  
+    // لینک‌های navbar
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        // فعال کردن لینک
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+  
+        // نمایش صفحه
+        Object.values(pages).forEach(p => p.style.display = 'none');
+        const target = link.getAttribute('href');
+        if(target.includes('library')) pages.library.style.display = 'block';
+        else if(target.includes('author')) pages.author.style.display = 'block';
+        else pages.learn.style.display = 'block';
+      });
+    });
+  </script>
+  <script src="learn.js"></script>
+  <script src="library.js"></script>
+  <script src="author.js"></script>
+  
+</body>
+</html>

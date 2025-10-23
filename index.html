@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pocket Classroom — Learn (Notes / Flashcards / Quiz)</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+    /* =========================
+       Pocket Classroom — Single-file styles
+       Comments are in English.
+       ========================= */
+    :root{
+      --bg: #F6EFD2;
+      --card-bg: #ffffff;
+      --accent: #FFBD35;
+      --text-dark: #1f1f1f;
+      --muted: #6c757d;
+    }
+    html,body{height:100%; background:var(--bg); color:var(--text-dark);}
+
+    .custom-navbar{background:rgba(10,10,10,0.85);}/* navbar background */
+    .logo-circle{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;background:#111;color:#fff;font-weight:700}
+
+    .dark-card{background:var(--card-bg);border-radius:12px;border:0;box-shadow:0 6px 20px rgba(17,24,39,0.06)}
+                                                               
+    /* Flashcard styles */
+    .flashcard-card{background:transparent;border:0}
+    #flashcard{width:100%;max-width:680px;height:220px;margin:0 auto;perspective:1200px;cursor:pointer}
+    #flashcard-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .6s}
+    #flashcard.flipped #flashcard-inner{transform:rotateY(180deg)}
+    .flash-face{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:10px;padding:20px;backface-visibility:hidden;box-shadow:0 8px 24px rgba(15,23,42,0.08)}
+    .flash-face.front{background:#fff}
+    .flash-face.back{background:#111;color:#fff;transform:rotateY(180deg)}
+
+    /* Notes and Quiz panes — hidden by default, controlled by JS */
+    .pane{display:none}
+    .pane.active{display:block}
+
+    /* Small responsive tweaks */
+    @media (max-width:767px){
+      #flashcard{height:180px}
+      .card.p-4{padding:1rem}
+    }
+
+    /* Tiny utility */
+    .muted-small{font-size:.85rem;color:var(--muted)}
+
+    /* Quiz styles */
+    .quiz-option{cursor:pointer;border-radius:8px;padding:.6rem;margin:.35rem 0;border:1px solid rgba(0,0,0,0.06)}
+    .quiz-option:hover{background:rgba(0,0,0,0.03)}
+    .quiz-option.correct{border-color:green}
+    .quiz-option.wrong{border-color:#d63333}
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
+  <div class="container-fluid">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+      <span class="logo-circle">PC</span>
+      <span>Pocket Classroom</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="library.html">Library</a></li>
+        <li class="nav-item"><a class="nav-link" href="author.html">Author</a></li>
+        <li class="nav-item"><a class="nav-link active" href="index.html">Learn</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="container-fluid py-4">
+  <div class="row gx-4 justify-content-center">
+
+    <!-- center content -->
+    <div class="col-12 col-lg-9">
+      <div class="card dark-card mb-4">
+        <div class="card-body">
+
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div style="color: black;">
+              <h5 class="mb-1">Learn</h5>
+              <small class="text-muted">Study a capsule in Notes, Flashcards, or Quiz mode</small>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+              <select id="capsuleSelect" class="form-select form-select-sm me-2" style="min-width:180px;">
+                <option value="web">Intro to Web Basics</option>
+                <option value="html">HTML Basics</option>
+              </select>
+              <button id="exportBtn" class="btn btn-sm" style="background-color: var(--accent); color: #F6EFD2;"><i class="bi bi-download"></i> Export</button>
+            </div>
+          </div>
+
+          <!-- Tabs -->
+          <ul class="nav nav-pills mb-3" id="modeTabs">
+            <li class="nav-item"><a class="nav-link" data-mode="notes" href="#">Notes</a></li>
+            <li class="nav-item"><a class="nav-link active" data-mode="flash" href="#">Flashcards</a></li>
+            <li class="nav-item"><a class="nav-link" data-mode="quiz" href="#">Quiz</a></li>
+          </ul>
+
+          <!-- Content container -->
+          <div class="card flashcard-card">
+            <div class="card-body p-4 d-flex flex-column">
+
+              <!-- progress / controls row -->
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="small text-muted"> <span id="progressLabel">1 / 3</span> • Press <kbd>space</kbd> to flip</div>
+                <div class="d-flex gap-2 align-items-center">
+                  <button id="prevBtn" class="btn btn-sm btn-outline-light"><i class="bi bi-chevron-left"></i></button>
+                  <button id="nextBtn" class="btn btn-sm btn-outline-light"><i class="bi bi-chevron-right"></i></button>
+                </div>
+              </div>
+
+              <!-- Mode panes -->
+              <!-- NOTES PANE -->
+              <div id="notesPane" class="pane">
+                <!-- Notes content -->
+                <div class="card p-3 mb-3">
+                  <h6>Notes — Intro to Web</h6>
+                  <p class="muted-small">These are short capsule notes. You can edit this text or replace with server content.</p>
+                  <ul>
+                    <li>Web = Browser + Server + HTML/CSS/JS</li>
+                    <li>HTML provides structure</li>
+                    <li>CSS provides presentation</li>
+                    <li>JS provides behavior</li>
+                  </ul>
+                </div>
+
+                <!-- Quick action to switch to quiz about notes -->
+                <div class="d-flex gap-2">
+                  <button id="startQuizFromNotes" class="btn btn-sm btn-warning">Start Quiz</button>
+                  <button id="backToFlashFromNotes" class="btn btn-sm btn-outline-secondary">Go to Flashcards</button>
+                </div>
+              </div>
+
+              <!-- FLASHCARDS PANE (default visible) -->
+              <div id="flashPane" class="pane active">
+
+                <div class="card p-4" style="position:relative">
+                  <div class="d-flex align-items-center mb-3">
+                    <h5 class="mb-0">Flashcards — HTML Capsule</h5>
+                    <span class="badge bg-secondary ms-2">Level: Beginner</span>
+                  </div>
+
+                  <!-- Flashcard area -->
+                  <div id="flashcard" class="shadow-sm rounded" aria-label="flashcard" role="button">
+                    <div id="flashcard-inner">
+                      <!-- Front face -->
+                      <div class="flash-face front">
+                        <pre id="cardFront" style="margin:0; font-size:1.25rem;">HTML</pre>
+                      </div>
+
+                      <!-- Back face -->
+                      <div class="flash-face back">
+                        <pre id="cardBack" style="margin:0; font-size:1.05rem;">HyperText Markup Language — basic structure</pre>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <!-- progress + actions -->
+                <div class="d-flex align-items-center gap-3 w-100 mt-3">
+                  <div class="small text-muted">Progress</div>
+                  <div class="progress" style="width:160px; height:8px;">
+                    <div id="mainProgress" class="progress-bar" role="progressbar" style="width:33%"></div>
+                  </div>
+
+                  <div class="d-flex gap-2 ms-auto">
+                    <button id="markUnknown" class="btn btn-outline-danger btn-sm">Mark Unknown</button>
+                    <button id="markKnown" class="btn btn-success btn-sm">Mark Known</button>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- QUIZ PANE -->
+              <div id="quizPane" class="pane">
+                <div class="card p-3 mb-3">
+                  <h6>Quiz — Quick Check</h6>
+                  <div id="quizArea">
+                    <!-- Quiz content populated by JS -->
+                    <p class="muted-small">Loading quiz...</p>
+                  </div>
+                </div>
+                <div class="d-flex gap-2">
+                  <button id="restartQuiz" class="btn btn-sm btn-outline-primary">Restart Quiz</button>
+                  <button id="backToFlashFromQuiz" class="btn btn-sm btn-outline-secondary">Back to Flashcards</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="learn.js"></script>
+</body>
+</html>
